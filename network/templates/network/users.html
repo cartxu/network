@@ -1,0 +1,30 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <h3 class="text-center text-warning">The Fellowship</h3> 
+<div class="row justify-content-center">     
+{% for user in profile.all %}
+
+<div class="card m-4 shadow" style="width: 18rem;">
+    <img style="height: 10rem; object-fit: cover;" src="{{ user.avatar }}" class="card-img-top" alt="...">
+    <div class="card-header">
+       <strong> {{ user.user|upper }}</strong> <span class="badge bg-warning text-right">{{ user.follower.count }} FOLLOWER(S)</span>
+      </div>
+    <div class="card-body">
+      <p class="card-text text-center"> {{ user.bio }}</p>
+    </div>
+    <div class="card-footer text-center"> <a href="{% url 'profile' user.user %}"> <button class="btn btn-secondary text-light rounded-pill shadow-sm">more</button></div></a>
+  </div>
+
+{% endfor %}
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+{% endblock %}
+

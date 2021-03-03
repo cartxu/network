@@ -1,0 +1,161 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    
+<div class="container">
+    <section class="row">
+        <article class="col-11 col-md-8 order-2 my-1">
+            <ul>  
+                {% for post in page_obj %}
+                <!-- contenedor para alerta -->
+                <div id="mensaje"></div>
+
+                <li class="card border-warning mb-3 shadow-sm post" id="postbody-{{post.id}}"> 
+                    <!-- header del post con info usuario y post -->
+                    <div class="card-header bg-warning"> 
+                        <span class="text small text-muted ">
+                            <i class="far fa-clock mx-1"></i> {{ post.timestamp }} 
+                                
+                            <i class="fas fa-user mx-1"></i> <a href="{% url 'profile' post.user %}">{{ post.user }}</a>
+                        </span>  
+        
+    
+                    </div>
+                    <div class="card-body bg-light ">
+                    <!-- Contenedor cuerpo de post -->
+                    <div class="card-text" id="postView-{{post.id}}">{{ post.body }}</div> 
+
+                    <!-- Contenedor para editar -->
+                    <div class="card-text" id="editView-{{post.id}}" style="display: none;">
+                        <textarea data-id="{{post.id}}" id="textArea-{{post.id}}" cols="30" rows="5" class="form-control mb-1"> {{ post.body }}
+                        </textarea>
+                        <button id="postSave-{{post.id}}" value="save" class="btn btn-warning text-light">Save</button> <button class="btn btn-danger text-light" id="cancel-{{post.id}}">Cancel</button>
+                    </div> 
+
+                    </div>
+
+                    <div class="card-footer bg-warning text small text-right link">
+                    
+                        {% if user.is_authenticated  %} 
+    
+                        {% ifequal request.user post.user %}
+                        <!-- si el usuario logged es el mismo que posteó se muestran opciones para editar post y borrar -->
+                        <!-- Boton para editar post -->
+                        
+                        <i class="editar far fa-edit mx-1" id="editButton-{{post.id}}" data-id="{{post.id}}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit Post"> </i>
+                        
+                        <!-- Boton para borrar post -->
+                    
+                        <i class="fas fa-trash-alt mx-1 delete" id="deletePost-{{post.id}}" data-id="{{post.id}}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete Post" style="cursor:pointer;"></i>
+                       
+                        <!-- El usuario podrá ver cuantos likes lleva su post pero no darle like -->
+                         <i class="far fa-heart mx-1" id="likePost"></i> <span class="badge bg-secondary text-light">{{ post.like.count }}</span>
+                        <!-- Si el usuario logged no es el que posteó, podrá dar like -->
+                        {% else %} 
+                        {% if request.user in post.like.all %}
+                        <i class="far fas fa-heart mx-1 unlike text-danger" data-id="{{post.id}}" id="unlikePost-{{post.id}}" style="cursor:pointer;"></i> <span class="text-light badge bg-danger" id="postLikes-{{post.id}}">{{ post.like.count }} </span>
+                        {% else %}
+                        <i class="far fa-heart mx-1 like text-danger" data-id="{{post.id}}" id="likePost-{{post.id}}" style="cursor:pointer;"></i> <span class="text-light badge bg-danger" id="postLikes-{{post.id}}">{{ post.like.count }} </span>
+                        {% endif %}
+                        {% endifequal %}
+                        {% endif %}
+            
+                        </div>
+                </li>
+                {% endfor %}
+                
+            </ul>
+        <!-- PAGINTATION -->
+        <div class="my-3">
+            <ul class="pagination justify-content-center text small">
+            {% if page_obj.has_previous %}
+
+                <li class="page-item"> <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a> </li>
+            {% else %}
+            <li class="page-item disabled"> <a class="page-link" href="">&laquo;</a> </li>
+            {% endif %}
+            <li class="page-item active">
+                <span class="page-link">
+                    {{ page_obj.number }}
+                    <span class="sr-only">(current)</span>
+                  </span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">
+                of
+                <span class="sr-only">(current)</span>
+                  </span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">
+                {{ page_obj.paginator.num_pages }}
+                <span class="sr-only">(current)</span>
+                  </span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"> &raquo;</a> </li>
+                
+            {% else %}
+                <li class="page-item disabled"> <a class="page-link" href="">&raquo;</a> </li>
+            {% endif %}
+              
+            </ul>
+        </div>
+        </article>
+
+        <aside class="col-10 col-md-4 bg-warning p-3 rounded shadow-sm order-1 my-1 mx-auto text-center">
+
+            <div class="row">
+                <img class="userpic shadow" src="{{ profile.avatar }}" alt="">                
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <p class="badge bg-light link shadow-sm">Followers: {{ profile.follower.count }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="badge bg-light link shadow-sm">Following: {{ profile.following.count }} </p>
+                </div>
+            </div>
+            {% ifnotequal request.user profile.user %}
+               {% if request.user in profile.follower.all %}
+                <div class="row justify-content-center">
+                    <form action="{% url 'profile' profile.user %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="submit" name="Unfollow" value="Unfollow" class="btn btn-danger text-light rounded-pill mb-3 shadow-sm btn-sm">
+                    </form>
+                </div>
+                {% else %}
+                <div class="row justify-content-center">
+                    <form action="{% url 'profile' profile.user %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="submit" name="Follow" value="Follow" class="btn btn-success text-light rounded-pill mb-3 shadow-sm btn-sm">
+                    </form>
+                </div>
+                {% endif %}
+            {% endifnotequal %}
+            <div class="row">
+                <p class="col text-muted small">{{ profile.user }} has shared {{ posts.count }} posts.</p>
+            </div>
+            <div class="row">
+                <div class="col text-light blockquote-footer">{{ profile.bio }}</div>
+            </div>
+           
+            </div>
+        </aside>
+    
+
+
+    </section>
+
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+{% endblock %}
+

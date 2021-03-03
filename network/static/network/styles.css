@@ -1,0 +1,100 @@
+/******** GENERALES **********/
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    background-color: #ffffff;
+    opacity: 1;
+    font-size: 1rem;
+}
+
+a {
+    color: #1d8565;
+    
+}
+
+a:hover {
+    color: #a35b18;
+    text-decoration: none;
+}
+
+textarea {
+    resize: none;
+}
+
+.link {
+    color: #9c7b17;
+}
+
+/*********** LOGO ***************/
+.ring {
+    width: 2rem;
+    height: auto;
+    margin-right: 1rem;
+}
+@media screen and (max-width: 768px){
+    .ring {
+        width: 2.5rem;
+        height: auto;
+        margin: 1rem;
+    }
+}
+
+/************* PAGINATION ***************/
+
+.page-item.active .page-link {
+   
+    color: #fff;
+    background-color: #ffc800;
+    border-color: #ffd400;
+}
+
+.page-link {
+    color: #ffc800;
+}
+
+.page-link:hover {
+    color: #ffa807;
+}
+
+/************ USERPIC ******************/
+
+.userpic {
+    width: 7rem;
+    height: 7rem;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 5px auto 5px auto;
+    
+
+}
+
+.userpic:hover {
+    filter: grayscale(80%);
+}
+
+
+
+/*********** POSTS ***************/
+
+
+.editar {
+    cursor: pointer;
+    color: #9c7b17;
+}
+
+.editar:hover {
+    color: #a37718;
+}
+
+.post {
+    animation-name: delete;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+
+}
+

@@ -1,0 +1,32 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <h3 class="text-center">Hello {{ request.user }},</h3> 
+       <p class="text-center text-warning">take a minute to complete your profile!</p> 
+
+    {% if message %}
+        <div class="text-center text-danger">{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'bio' %}" method="post" class="text-center w-50 mx-auto p-4 border border-warning rounded bg-light" >
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="bio">About you</label>  {{ form.bio }}
+        </div>
+        <div class="form-group">
+           <label for="avatar">Avatar</label> {{ form.avatar }}
+        </div>
+        <input class="btn btn-warning" type="submit" value="Save">
+    </form>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+{% endblock %}
+
